@@ -19,6 +19,8 @@ require 'target: aarch64-apple-darwin' \
   'macOS canary must build Apple Silicon explicitly.'
 require 'target: x86_64-apple-darwin' \
   'macOS canary must build Intel explicitly.'
+require 'version_arch: x86-64' \
+  'Intel canary versions must use a semver-safe architecture name.'
 require 'cargo build --release --target "$TARGET"' \
   'Sidecars must use the matrix target.'
 require './scripts/bundle-sidecars.sh "$TARGET"' \
