@@ -22,6 +22,10 @@ Linux desktop builds also require the system GTK/WebKit dependencies listed in
 
 ## Native Windows
 
+For installing this fork rather than developing it, prefer the
+[Windows GitHub Actions build](../README.md#recommended-build-on-github-actions).
+It avoids local compilation and does not require changing antivirus policy.
+
 Install these before building any Rust crate or the desktop application:
 
 1. [Git for Windows](https://git-scm.com/download/win), including Git Bash.

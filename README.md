@@ -111,6 +111,26 @@ Installing it replaces an existing upstream Buzz installation in
 
 ### Windows App
 
+#### Recommended: Build on GitHub Actions
+
+This avoids local Rust compilation and antivirus behavioral detections. The
+fork includes a Windows canary workflow that builds the complete unsigned NSIS
+installer on a clean GitHub-hosted Windows runner.
+
+1. Open [Actions -> Windows Canary](https://github.com/msftnadavbh/buzzforghcp/actions/workflows/windows-canary.yml).
+2. Select **Run workflow**, choose `main`, then run it.
+3. Wait for **Build Windows canary** to finish.
+4. Open the completed run and download the
+   `buzzforghcp-windows-<commit-sha>` artifact.
+5. Unzip it and run the contained `*-setup.exe` installer.
+
+Artifacts are retained for seven days. The installer is unsigned, so
+SmartScreen may warn. Verify that the workflow ran in
+`msftnadavbh/buzzforghcp` and that the run's commit matches the source you
+intend to install.
+
+#### Alternative: Build Locally
+
 Requirements:
 
 - Windows 10 or Windows 11
@@ -152,6 +172,11 @@ anyway** only if you built the installer yourself from this checkout.
 This fork uses the same application identifier and name as upstream Buzz. The
 installer replaces an existing upstream Buzz installation rather than creating
 a separate app.
+
+If Microsoft Defender reports `Behavior:Win32/BaseFileEncrypt` against the
+official Rustup `cargo.exe` during local crate extraction, leave the alert
+blocked and use the GitHub Actions build above. Do not add broad exclusions for
+the repository, Cargo cache, Git Bash, or your user profile.
 
 ### Linux App
 
