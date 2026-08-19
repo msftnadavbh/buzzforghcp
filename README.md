@@ -85,7 +85,6 @@ Requirements:
 Build the application from Terminal:
 
 ```bash
-set -e
 . ./bin/activate-hermit
 command -v cargo rustc pnpm
 pnpm install
@@ -127,7 +126,6 @@ After installing them, close and reopen Git Bash. Do **not** source
 `bin/activate-hermit` on Windows. Verify the native tools and build:
 
 ```bash
-set -e
 rustup toolchain install 1.95.0-x86_64-pc-windows-msvc
 rustup default 1.95.0-x86_64-pc-windows-msvc
 npm install -g pnpm@11.4.0
@@ -170,7 +168,6 @@ sudo apt-get install -y --no-install-recommends \
 Build the application:
 
 ```bash
-set -e
 . ./bin/activate-hermit
 command -v cargo rustc pnpm
 pnpm install
