@@ -61,20 +61,19 @@ Install these on every platform:
 - [Git](https://git-scm.com/downloads)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) or Docker
   Engine, if you want to run a local Buzz relay
-- [Hermit](https://cashapp.github.io/hermit/)
+- [Hermit](https://cashapp.github.io/hermit/) on macOS and Linux. Native
+  Windows uses the separately installed toolchain documented below.
 
 Clone this fork:
 
 ```bash
 git clone https://github.com/msftnadavbh/buzzforghcp.git
 cd buzzforghcp
-. ./bin/activate-hermit
-command -v cargo rustc pnpm
 ```
 
-Hermit downloads the pinned Rust, Node.js, pnpm, and `just` toolchains when
-first used. All three paths printed above must point into this checkout's
-`bin/` directory. Do not continue if activation prints an error.
+On macOS and Linux, `. ./bin/activate-hermit` downloads the pinned Rust,
+Node.js, pnpm, and `just` toolchains when first used. Do not run that command in
+native Windows Git Bash; this repository's Hermit packages are Unix-only.
 
 ### macOS App
 
@@ -119,14 +118,20 @@ Requirements:
 - [Git for Windows](https://git-scm.com/download/win), including Git Bash
 - Microsoft C++ Build Tools with **Desktop development with C++**
 - Microsoft Edge WebView2 Runtime
+- [Rustup for Windows](https://rustup.rs/) using the MSVC toolchain
+- [Node.js 24](https://nodejs.org/)
+- pnpm 11.4.0: `npm install -g pnpm@11.4.0`
 - Docker Desktop, if running a local relay
 
-Open **Git Bash**, not WSL, and run:
+After installing them, close and reopen Git Bash. Do **not** source
+`bin/activate-hermit` on Windows. Verify the native tools and build:
 
 ```bash
 set -e
-. ./bin/activate-hermit
-command -v cargo rustc pnpm
+rustup toolchain install 1.95.0-x86_64-pc-windows-msvc
+rustup default 1.95.0-x86_64-pc-windows-msvc
+npm install -g pnpm@11.4.0
+./scripts/check-windows-build-prereqs.sh
 export CMAKE_POLICY_VERSION_MINIMUM=3.5
 pnpm install
 cargo build --release \
@@ -212,23 +217,28 @@ it requires the Linux dependency and build steps and is not the recommended
 Windows installation. A Windows Buzz process cannot launch a Copilot CLI that
 exists only inside WSL.
 
-#### Git Bash Hermit bootstrap errors
+#### Git Bash shows only a global pnpm path
 
-This fork includes a Windows fix for Hermit's first-run cache directory. If an
-older checkout reports `HERMIT_STATE_DIR_RAW: unbound variable`, update it and
-retry from a fresh Git Bash:
+This is expected before installing the native Windows build prerequisites.
+`command -v cargo rustc pnpm` prints only commands it can find; your output:
 
-```bash
-git pull
-unset HERMIT_STATE_DIR HERMIT_EXE
-. ./bin/activate-hermit
-command -v cargo rustc pnpm
+```text
+/c/Users/nadavbh/AppData/Roaming/npm/pnpm
 ```
 
-If activation fails, do not run `pnpm install`: Git Bash may find a global pnpm
-that tries to switch package-manager versions and reports a registry-signature
-error. Successful activation makes `cargo`, `rustc`, and `pnpm` resolve to the
-repository's Hermit shims.
+means `cargo` and `rustc` are missing, while pnpm is already installed globally.
+Install Rustup, then pin pnpm to the repository's required version:
+
+```bash
+rustup toolchain install 1.95.0-x86_64-pc-windows-msvc
+rustup default 1.95.0-x86_64-pc-windows-msvc
+npm install -g pnpm@11.4.0
+./scripts/check-windows-build-prereqs.sh
+```
+
+The repository's `.npmrc` disables pnpm's redundant package-manager
+self-switch, avoiding the registry-signature error after the pinned pnpm is
+installed directly.
 
 ### First Launch
 
