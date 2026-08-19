@@ -11,8 +11,9 @@ This guide covers macOS, Windows, Linux, and Windows Subsystem for Linux (WSL).
 
 ## Requirements
 
-- Buzz Desktop from the [latest Buzz release](https://github.com/block/buzz/releases/latest),
-  or a local source build.
+- Buzz Desktop built from this fork. Follow
+  [Install Buzz Desktop](../README.md#install-buzz-desktop) first. Upstream Buzz
+  release binaries do not include this Copilot integration.
 - An active GitHub Copilot subscription.
 - GitHub Copilot CLI allowed by your organization or enterprise policy.
 - A supported GitHub Copilot CLI installation on the same operating-system

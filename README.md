@@ -30,16 +30,212 @@ The integration adds:
 
 ## Start Here
 
-Read the complete installation guide:
+There are two separate installations:
+
+1. Install this fork's **Buzz Desktop application**.
+2. Install and authenticate **GitHub Copilot CLI**.
+
+Do them in that order. An upstream Buzz release does not contain this fork's
+Copilot runtime integration.
+
+## Install Buzz Desktop
+
+### Important: Build Required
+
+This fork does not currently publish prebuilt DMG, EXE, DEB, or AppImage
+releases. You must build the native application once from source.
+
+Do not install a binary from
+[`block/buzz` releases](https://github.com/block/buzz/releases) if you want this
+integration. Those are upstream builds and do not include this fork's changes.
+
+The commands below build the complete application, including the Rust
+`buzz-acp`, `buzz-agent`, `buzz`, and Git credential sidecars. Running only
+`just desktop-build` is insufficient: that command builds frontend web assets,
+not an installable desktop application.
+
+### Common Setup
+
+Install these on every platform:
+
+- [Git](https://git-scm.com/downloads)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) or Docker
+  Engine, if you want to run a local Buzz relay
+- [Hermit](https://cashapp.github.io/hermit/)
+
+Clone this fork:
+
+```bash
+git clone https://github.com/msftnadavbh/buzzforghcp.git
+cd buzzforghcp
+. ./bin/activate-hermit
+```
+
+Hermit downloads the pinned Rust, Node.js, pnpm, and `just` toolchains when
+first used.
+
+### macOS App
+
+Requirements:
+
+- macOS
+- Xcode Command Line Tools: `xcode-select --install`
+
+Build the application from Terminal:
+
+```bash
+. ./bin/activate-hermit
+pnpm install
+cargo build --release \
+  -p buzz-acp -p buzz-agent -p buzz-backend-kubernetes \
+  -p buzz-dev-mcp -p git-credential-nostr -p buzz-cli
+./scripts/bundle-sidecars.sh
+pnpm --dir desktop tauri build --bundles dmg --features mesh-llm
+```
+
+The installer is created under:
+
+```text
+desktop/src-tauri/target/release/bundle/dmg/
+```
+
+Open the `.dmg`, drag **Buzz** into **Applications**, then launch Buzz. This is
+an unsigned local build, so macOS may require **System Settings -> Privacy &
+Security -> Open Anyway** on first launch.
+
+This fork uses the same application identifier and name as upstream Buzz.
+Installing it replaces an existing upstream Buzz installation in
+**Applications**; it does not install side by side.
+
+### Windows App
+
+Requirements:
+
+- Windows 10 or Windows 11
+- [Git for Windows](https://git-scm.com/download/win), including Git Bash
+- Microsoft C++ Build Tools with **Desktop development with C++**
+- Microsoft Edge WebView2 Runtime
+- Docker Desktop, if running a local relay
+
+Open **Git Bash**, not WSL, and run:
+
+```bash
+. ./bin/activate-hermit
+export CMAKE_POLICY_VERSION_MINIMUM=3.5
+pnpm install
+cargo build --release \
+  -p buzz-acp -p buzz-agent -p buzz-dev-mcp \
+  -p git-credential-nostr -p buzz-cli
+./scripts/bundle-sidecars.sh
+pnpm --dir desktop tauri build --bundles nsis
+```
+
+The installer is created under:
+
+```text
+desktop/src-tauri/target/release/bundle/nsis/
+```
+
+Run the generated `*-setup.exe`. The local build is unsigned, so Windows
+SmartScreen may show **Windows protected your PC**. Choose **More info -> Run
+anyway** only if you built the installer yourself from this checkout.
+
+This fork uses the same application identifier and name as upstream Buzz. The
+installer replaces an existing upstream Buzz installation rather than creating
+a separate app.
+
+### Linux App
+
+On Debian or Ubuntu, install the native Tauri dependencies:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y --no-install-recommends \
+  build-essential curl file libasound2-dev libayatana-appindicator3-dev \
+  libgtk-3-dev librsvg2-dev libssl-dev libwebkit2gtk-4.1-dev libxdo-dev \
+  patchelf wget
+```
+
+Build the application:
+
+```bash
+. ./bin/activate-hermit
+pnpm install
+cargo build --release \
+  -p buzz-acp -p buzz-agent -p buzz-backend-kubernetes \
+  -p buzz-dev-mcp -p git-credential-nostr -p buzz-cli
+./scripts/bundle-sidecars.sh
+pnpm --dir desktop tauri build --bundles deb,appimage --features mesh-llm
+```
+
+Artifacts are created under:
+
+```text
+desktop/src-tauri/target/release/bundle/deb/
+desktop/src-tauri/target/release/bundle/appimage/
+```
+
+Install the DEB:
+
+```bash
+sudo apt install ./desktop/src-tauri/target/release/bundle/deb/*.deb
+```
+
+Or run the AppImage:
+
+```bash
+chmod +x desktop/src-tauri/target/release/bundle/appimage/*.AppImage
+./desktop/src-tauri/target/release/bundle/appimage/*.AppImage
+```
+
+### WSL
+
+Use the **Windows app instructions** above. Build and install Buzz from Git
+Bash or PowerShell on Windows, not from inside WSL.
+
+The recommended arrangement is:
+
+```text
+Windows Buzz Desktop + Windows GitHub Copilot CLI
+```
+
+Building the Linux GUI inside WSLg is possible as a developer experiment, but
+it requires the Linux dependency and build steps and is not the recommended
+Windows installation. A Windows Buzz process cannot launch a Copilot CLI that
+exists only inside WSL.
+
+### First Launch
+
+Buzz is a client for a Buzz relay/community. After installing the desktop app:
+
+1. Launch Buzz.
+2. Connect to a community URL shared by its operator, or run a local relay.
+3. Complete identity and community onboarding.
+
+For a local development relay, return to the repository root and run:
+
+```bash
+. ./bin/activate-hermit
+cp .env.example .env
+just setup
+just dev
+```
+
+`just setup` starts Postgres, Redis, and the other local services with Docker.
+`just dev` starts the relay and opens an uninstalled development build of Buzz.
+
+## Install GitHub Copilot CLI
+
+After Buzz Desktop is installed, follow the complete platform guide:
 
 **[Install GitHub Copilot CLI for Buzz on macOS, Windows, Linux, or WSL](docs/github-copilot-cli.md)**
 
-The short version:
+Then:
 
-1. Install GitHub Copilot CLI on the same operating-system side as Buzz.
-2. Run `copilot login`.
-3. Start this fork's Buzz Desktop build.
-4. Open **Settings -> Agent runtimes**.
+1. Run `copilot login` on the same operating-system side as Buzz.
+2. Restart Buzz so it receives any PATH changes.
+3. Open **Settings -> Agent runtimes**.
+4. Find **GitHub Copilot** and use **Check again** if necessary.
 5. Select **GitHub Copilot** when creating or editing an agent.
 
 ## Platform Commands
@@ -107,38 +303,6 @@ concentrated in these locations:
 | `docs/github-copilot-cli.md` | Complete installation and troubleshooting guide |
 
 Use the Git history to inspect the complete fork diff.
-
-## Build From Source
-
-Prerequisites:
-
-- Docker
-- [Hermit](https://cashapp.github.io/hermit/)
-- Platform dependencies required by upstream Buzz/Tauri
-
-```bash
-git clone https://github.com/msftnadavbh/buzzforghcp.git
-cd buzzforghcp
-. ./bin/activate-hermit
-cp .env.example .env
-just setup
-just build
-```
-
-Run the relay and desktop app together:
-
-```bash
-just dev
-```
-
-For packaged desktop builds:
-
-```bash
-just desktop-build
-```
-
-Upstream contributor and platform setup details remain in
-[`CONTRIBUTING.md`](CONTRIBUTING.md) and [`TESTING.md`](TESTING.md).
 
 ## Verify the Integration
 
