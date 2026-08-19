@@ -69,10 +69,12 @@ Clone this fork:
 git clone https://github.com/msftnadavbh/buzzforghcp.git
 cd buzzforghcp
 . ./bin/activate-hermit
+command -v cargo rustc pnpm
 ```
 
 Hermit downloads the pinned Rust, Node.js, pnpm, and `just` toolchains when
-first used.
+first used. All three paths printed above must point into this checkout's
+`bin/` directory. Do not continue if activation prints an error.
 
 ### macOS App
 
@@ -84,7 +86,9 @@ Requirements:
 Build the application from Terminal:
 
 ```bash
+set -e
 . ./bin/activate-hermit
+command -v cargo rustc pnpm
 pnpm install
 cargo build --release \
   -p buzz-acp -p buzz-agent -p buzz-backend-kubernetes \
@@ -120,7 +124,9 @@ Requirements:
 Open **Git Bash**, not WSL, and run:
 
 ```bash
+set -e
 . ./bin/activate-hermit
+command -v cargo rustc pnpm
 export CMAKE_POLICY_VERSION_MINIMUM=3.5
 pnpm install
 cargo build --release \
@@ -159,7 +165,9 @@ sudo apt-get install -y --no-install-recommends \
 Build the application:
 
 ```bash
+set -e
 . ./bin/activate-hermit
+command -v cargo rustc pnpm
 pnpm install
 cargo build --release \
   -p buzz-acp -p buzz-agent -p buzz-backend-kubernetes \
@@ -203,6 +211,24 @@ Building the Linux GUI inside WSLg is possible as a developer experiment, but
 it requires the Linux dependency and build steps and is not the recommended
 Windows installation. A Windows Buzz process cannot launch a Copilot CLI that
 exists only inside WSL.
+
+#### Git Bash Hermit bootstrap errors
+
+This fork includes a Windows fix for Hermit's first-run cache directory. If an
+older checkout reports `HERMIT_STATE_DIR_RAW: unbound variable`, update it and
+retry from a fresh Git Bash:
+
+```bash
+git pull
+unset HERMIT_STATE_DIR HERMIT_EXE
+. ./bin/activate-hermit
+command -v cargo rustc pnpm
+```
+
+If activation fails, do not run `pnpm install`: Git Bash may find a global pnpm
+that tries to switch package-manager versions and reports a registry-signature
+error. Successful activation makes `cargo`, `rustc`, and `pnpm` resolve to the
+repository's Hermit shims.
 
 ### First Launch
 

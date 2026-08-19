@@ -9,6 +9,16 @@ if [ "${BASH_SOURCE-}" = "$0" ]; then
   exit 33
 fi
 
+# Hermit's generated launcher recognizes Darwin and Linux, but Git Bash reports
+# MINGW64_NT-* and leaves its state directory unset during first-run bootstrap.
+if [ -z "${HERMIT_STATE_DIR-}" ]; then
+  case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*)
+      export HERMIT_STATE_DIR="${HOME}/.cache/hermit"
+      ;;
+  esac
+fi
+
 BIN_DIR="$(dirname "${BASH_SOURCE[0]:-${(%):-%x}}")"
 if "${BIN_DIR}/hermit" noop > /dev/null; then
   eval "$("${BIN_DIR}/hermit" activate "${BIN_DIR}/..")"
@@ -18,4 +28,7 @@ if "${BIN_DIR}/hermit" noop > /dev/null; then
     fi
 
     echo "Hermit environment $("${HERMIT_ENV}"/bin/hermit env HERMIT_ENV) activated"
+else
+  echo "Failed to bootstrap the Hermit environment." >&2
+  return 1
 fi
