@@ -19,6 +19,7 @@ make_command cargo "cargo 1.95.0"
 make_command rustc "rustc 1.95.0 (test)"
 make_command node "v24.15.0"
 make_command pnpm "11.4.0"
+make_command cmake "cmake version 4.3.1"
 
 output=$(PATH="$TMP:/usr/bin:/bin" "$ROOT/scripts/check-windows-build-prereqs.sh")
 grep -q 'Windows build prerequisites: PASS' <<<"$output"

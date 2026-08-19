@@ -4,6 +4,10 @@ These 3 x 2 fixtures were produced by Android 16 (API 36) `Bitmap.compress`, not
 
 ## Regeneration
 
+Repository Rust checks use the platform setup in
+[`docs/development-toolchain.md`](../../../../../docs/development-toolchain.md).
+Fixture generation itself requires the Android SDK and an API 36 emulator.
+
 1. Compile and run the following program on an API 36 emulator:
 
    ```java

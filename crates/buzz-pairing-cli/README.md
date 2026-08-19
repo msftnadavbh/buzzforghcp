@@ -4,6 +4,10 @@ CLI tool for testing the [NIP-AB device pairing protocol](../buzz-core/src/pairi
 
 ## Quick Start
 
+Install the platform toolchain from
+[`docs/development-toolchain.md`](../../docs/development-toolchain.md) first.
+Native Windows uses Rustup rather than `bin/activate-hermit`.
+
 ```bash
 cargo build --release -p buzz-pairing-cli
 

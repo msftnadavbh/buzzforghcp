@@ -8,6 +8,16 @@ Desktop chat shell with:
 - Biome (lint/format/check)
 - Feature-driven frontend structure
 
+## Prerequisites
+
+Follow the repository's [development toolchain guide](../docs/development-toolchain.md)
+before running these commands. Native Windows uses Rustup/Node/pnpm/CMake;
+macOS and Linux use the repository's Hermit environment.
+
+To build and install the complete forked desktop app, including native Rust
+sidecars, use the platform instructions in the [root README](../README.md#install-buzz-desktop).
+`pnpm build` below builds frontend assets only.
+
 ## Scripts
 
 - `pnpm dev` - run the web frontend

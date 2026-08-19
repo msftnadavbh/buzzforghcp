@@ -76,9 +76,9 @@ We review as capacity allows — focused PRs that follow this guide move fastest
 
 | Tool | Version | Notes |
 |------|---------|-------|
-| Rust | 1.88+ | Install via [rustup](https://rustup.rs/) |
+| Rust | 1.95.0 | Install via [rustup](https://rustup.rs/) |
 | Node.js | 24+ | Required for desktop app commands and `just ci` |
-| pnpm | 10+ | Required for desktop app commands and `just ci` |
+| pnpm | 11.4.0 | Required for desktop app commands and `just ci` |
 | Flutter | 3.41+ | Required for mobile app — install via [flutter.dev](https://docs.flutter.dev/get-started/install) |
 | Docker | 24+ | For Postgres, Redis, MinIO |
 | `just` | latest | Task runner — `cargo install just` |
@@ -86,7 +86,7 @@ We review as capacity allows — focused PRs that follow this guide move fastest
 | `sqlx` migrations | workspace crate | `just migrate` applies embedded migrations from `migrations/` |
 
 This repo uses [Hermit](https://cashapp.github.io/hermit/) for toolchain
-pinning. Activate it once per shell session:
+pinning on macOS and Linux. Activate it once per shell session:
 
 ```bash
 . ./bin/activate-hermit
@@ -97,6 +97,12 @@ Hermit pins Rust, `just`, Node, pnpm, and other tools to the versions in
 (which `just setup` calls automatically) to pre-download all required tools
 upfront. If you don't use Hermit, ensure your toolchain meets the minimum
 versions in the table above.
+
+**Native Windows does not use this repository's Hermit environment.** Install
+Rustup (MSVC), Node.js, pnpm, CMake, Visual Studio C++ Build Tools, and WebView2
+as described in [`docs/development-toolchain.md`](docs/development-toolchain.md),
+then run `./scripts/check-windows-build-prereqs.sh` from Git Bash. WSL is a
+separate Linux environment and does not build the native Windows desktop app.
 
 #### Linux: Tauri system libraries
 
@@ -136,7 +142,7 @@ clippy`, `just test-unit`, and `just test` need no GTK.
 git clone https://github.com/block/buzz.git
 cd buzz
 
-# 2. Activate Hermit (optional but recommended)
+# 2. Activate Hermit (macOS/Linux; skip on native Windows)
 . ./bin/activate-hermit
 
 # 3. Bootstrap tools + infrastructure

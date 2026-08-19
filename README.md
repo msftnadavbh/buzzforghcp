@@ -240,6 +240,9 @@ The repository's `.npmrc` disables pnpm's redundant package-manager
 self-switch, avoiding the registry-signature error after the pinned pnpm is
 installed directly.
 
+The full toolchain reference is
+[`docs/development-toolchain.md`](docs/development-toolchain.md).
+
 ### First Launch
 
 Buzz is a client for a Buzz relay/community. After installing the desktop app:
@@ -248,10 +251,20 @@ Buzz is a client for a Buzz relay/community. After installing the desktop app:
 2. Connect to a community URL shared by its operator, or run a local relay.
 3. Complete identity and community onboarding.
 
-For a local development relay, return to the repository root and run:
+For a local development relay on macOS/Linux, return to the repository root
+and run:
 
 ```bash
 . ./bin/activate-hermit
+cp .env.example .env
+just setup
+just dev
+```
+
+On native Windows, first install `just` from the
+[toolchain guide](docs/development-toolchain.md), then run from Git Bash:
+
+```bash
 cp .env.example .env
 just setup
 just dev

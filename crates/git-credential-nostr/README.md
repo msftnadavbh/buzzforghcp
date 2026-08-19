@@ -7,6 +7,10 @@ NIP-98 credential helper for git — signs HTTP auth events with your Nostr key 
 - **git 2.46+** (requires `authtype` capability in the credential protocol)
 - **Rust toolchain** (for building from source)
 
+Install Rust using the platform instructions in
+[`docs/development-toolchain.md`](../../docs/development-toolchain.md). Native
+Windows uses Rustup/MSVC and must not source `bin/activate-hermit`.
+
 ## Installation
 
 ```bash

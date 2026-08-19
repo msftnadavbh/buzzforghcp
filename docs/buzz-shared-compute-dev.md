@@ -13,7 +13,7 @@ Run from the `block/buzz` repository root on the mesh-enabled branch.
 For a completely fresh, deterministic local state, use:
 
 ```bash
-. ./bin/activate-hermit
+. ./bin/activate-hermit # macOS/Linux; native Windows uses docs/development-toolchain.md
 just mesh-dev-fresh
 ```
 
@@ -50,7 +50,7 @@ ports during this test.
 ## 1. Launch the mesh-enabled desktop
 
 ```bash
-. ./bin/activate-hermit
+. ./bin/activate-hermit # macOS/Linux; native Windows uses docs/development-toolchain.md
 just mesh=1 dev
 ```
 

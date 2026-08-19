@@ -8,6 +8,8 @@ Buzz Desktop -> buzz-acp -> copilot --acp --stdio
 ```
 
 This guide covers macOS, Windows, Linux, and Windows Subsystem for Linux (WSL).
+Building the fork itself requires the platform setup in
+[`development-toolchain.md`](development-toolchain.md).
 
 ## Requirements
 

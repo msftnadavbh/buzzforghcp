@@ -16,6 +16,21 @@ require cargo 'Install Rust with rustup-init.exe from https://rustup.rs, then re
 require rustc 'Install Rust with rustup-init.exe from https://rustup.rs, then reopen Git Bash.'
 require node 'Install Node.js 24 from https://nodejs.org, then reopen Git Bash.'
 require pnpm 'Run: npm install -g pnpm@11.4.0'
+require cmake 'Run from PowerShell: winget install --id Kitware.CMake --exact, then reopen Git Bash.'
+
+if [[ $failed -ne 0 ]]; then
+  exit 1
+fi
+
+if command -v powershell.exe >/dev/null 2>&1; then
+  vs_installation=$(powershell.exe -NoProfile -Command \
+    '$vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"; if (Test-Path $vswhere) { & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath }' \
+    | tr -d '\r')
+  if [[ -z "$vs_installation" ]]; then
+    printf 'Missing Visual Studio C++ Build Tools. Install Visual Studio 2022 Build Tools with Desktop development with C++.\n' >&2
+    failed=1
+  fi
+fi
 
 if [[ $failed -ne 0 ]]; then
   exit 1
@@ -47,3 +62,4 @@ printf 'cargo: %s\n' "$(command -v cargo)"
 printf 'rustc: %s\n' "$(command -v rustc)"
 printf 'node: %s\n' "$(command -v node)"
 printf 'pnpm: %s\n' "$(command -v pnpm)"
+printf 'cmake: %s\n' "$(command -v cmake)"

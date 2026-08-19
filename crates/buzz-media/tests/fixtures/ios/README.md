@@ -4,6 +4,10 @@ These 2 x 2 fixtures were produced on an iOS simulator with UIKit, not by a gene
 
 ## Regeneration
 
+Repository Rust checks use the platform setup in
+[`docs/development-toolchain.md`](../../../../../docs/development-toolchain.md).
+Fixture generation itself requires macOS and the Xcode/iOS Simulator toolchain.
+
 1. Create a small source image and run this program against the simulator SDK:
 
    ```swift

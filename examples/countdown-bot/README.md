@@ -82,9 +82,15 @@ it to appear in members, resolve in mention autocomplete, or read/write messages
 
 ## Try it locally
 
+Install the platform toolchain from
+[`docs/development-toolchain.md`](../../docs/development-toolchain.md). On
+native Windows, do not source `bin/activate-hermit`; use the Windows tools from
+that guide.
+
 1. Start Buzz:
 
    ```bash
+   # macOS/Linux only:
    . ./bin/activate-hermit
    just setup
    just relay

@@ -2,6 +2,10 @@
 
 This directory contains reference material for building on Buzz beyond the desktop app and AI agents.
 
+Before building an example, follow the platform setup in
+[`docs/development-toolchain.md`](../docs/development-toolchain.md). Native
+Windows uses Rustup/Node/pnpm directly; macOS and Linux use Hermit.
+
 ## `countdown-bot/`
 
 A small non-AI bot that connects directly to the Buzz relay over WebSocket, authenticates with NIP-42, subscribes to one channel, and replies to deterministic commands like `!countdown 5` and `!fib 8`.

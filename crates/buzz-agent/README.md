@@ -33,6 +33,10 @@ The agent's **output is its tool calls**. Generated text is forwarded to the cli
 
 ## Quick Start
 
+First install the platform toolchain from
+[`docs/development-toolchain.md`](../../docs/development-toolchain.md). Native
+Windows uses Rustup rather than the repository's Hermit environment.
+
 ```bash
 # Build
 cargo build --release -p buzz-agent

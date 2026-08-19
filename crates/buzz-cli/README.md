@@ -4,6 +4,10 @@ Agent-first command-line interface for Buzz relay. JSON in, JSON out.
 
 ## Install
 
+Builds require the platform setup in
+[`docs/development-toolchain.md`](../../docs/development-toolchain.md). Native
+Windows uses Rustup rather than `bin/activate-hermit`.
+
 ```bash
 cargo install --path crates/buzz-cli
 ```

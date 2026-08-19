@@ -3,6 +3,10 @@
 NIP-GS signing program — signs git commits and tags with Nostr secp256k1 keys
 using BIP-340 Schnorr signatures.
 
+Source builds require the platform setup in
+[`docs/development-toolchain.md`](../../docs/development-toolchain.md). Native
+Windows uses Rustup/MSVC rather than the repository's Hermit environment.
+
 ## Usage
 
 ```bash

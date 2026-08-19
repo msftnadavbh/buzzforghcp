@@ -28,10 +28,14 @@ CLI signs every request with NIP-98, so you don't need `nak` or hand-rolled
 ### 1. Setup
 
 ```bash
-. ./bin/activate-hermit          # activate pinned toolchain
+. ./bin/activate-hermit          # macOS/Linux: activate pinned toolchain
 cp .env.example .env             # one-time
 just setup                       # start Docker services, run migrations
 ```
+
+On native Windows, do not source `bin/activate-hermit`. Install and verify the
+native toolchain with [`docs/development-toolchain.md`](docs/development-toolchain.md)
+and `./scripts/check-windows-build-prereqs.sh` first.
 
 > **Already running Buzz Desktop?** Desktop uses the same Docker container
 > names (`buzz-postgres`, `buzz-redis`) and the same

@@ -5,6 +5,10 @@ folder preserves the procedural SVG recipe used to generate that asset.
 
 ## Regenerate
 
+Install Node.js and pnpm using the repository
+[toolchain guide](../../../docs/development-toolchain.md). Native Windows does
+not use `bin/activate-hermit`.
+
 From `desktop/`:
 
 ```bash

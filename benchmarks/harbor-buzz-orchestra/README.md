@@ -8,6 +8,10 @@ Each agent runs *inside* the Harbor task container as the same
 launches: the production MCP toolset (shell, file tools, todo) with the
 `buzz` CLI on the shell's PATH. No Harbor fork or patch is required.
 
+Host builds require the platform setup in
+[`docs/development-toolchain.md`](../../docs/development-toolchain.md). Native
+Windows uses Rustup/Node/pnpm directly instead of `bin/activate-hermit`.
+
 ## Define the team
 
 The manifest is the benchmark condition. Each roster entry selects an agent

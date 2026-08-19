@@ -96,12 +96,16 @@ scripts/              # Dev tooling
 ## Getting Started
 
 ```bash
-. ./bin/activate-hermit   # activate hermit toolchain (Rust, Node, etc.)
+. ./bin/activate-hermit   # macOS/Linux: activate Hermit toolchain
 cp .env.example .env      # configure local environment
 just setup                # install deps, run migrations
 just relay                # start relay at ws://localhost:3000
 just ci                   # run before any PR
 ```
+
+Native Windows uses the Rustup/Node/pnpm/CMake toolchain documented in
+`docs/development-toolchain.md`; never source `bin/activate-hermit` from Git
+Bash. Verify it with `./scripts/check-windows-build-prereqs.sh`.
 
 See CONTRIBUTING.md for full setup details and dependency requirements.
 
@@ -125,9 +129,11 @@ clippy (workspace + Tauri), desktop TypeScript typechecking (`tsc --noEmit`),
 and fast unit tests in parallel (Rust, desktop JS, Tauri Rust, mobile Flutter)
 — no overlap with pre-commit. Builds are CI-only. Run `just fix-all` to auto-fix
 all formatting in one shot. Run `just ci` for the full local gate. Run `just
-hooks` to re-install hooks after env changes. Before agents run Git or hooks,
-activate the repo's Hermit environment (`. ./bin/activate-hermit`); do not
-rewrite hook commands to compensate for an unconfigured shell `PATH`.
+hooks` to re-install hooks after env changes. Before agents run Git or hooks on
+macOS/Linux, activate the repo's Hermit environment
+(`. ./bin/activate-hermit`). On native Windows, use the verified native
+toolchain instead; do not rewrite hook commands to compensate for an
+unconfigured shell `PATH`.
 
 **Commit with `git commit -s`.** The required **DCO Check** fails any PR with a commit missing a `Signed-off-by` trailer, and `just hooks` installs a `commit-msg` hook that adds it to commits you create locally (`git rebase` and `git cherry-pick` still need `--signoff`) — if you build commit commands programmatically, include `-s` every time. To repair a branch that already has unsigned commits: `git rebase --signoff main`, then force-push.
 

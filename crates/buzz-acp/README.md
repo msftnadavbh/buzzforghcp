@@ -15,6 +15,8 @@ Supports any agent that speaks [ACP](https://agentclientprotocol.com/) over stdi
 
 - A running Buzz relay (`just relay` starts Docker services automatically, or use a hosted instance)
 - A Nostr keypair for the agent (see [Generating Keys](#generating-keys))
+- The platform toolchain from [`docs/development-toolchain.md`](../../docs/development-toolchain.md).
+  Native Windows does not use `bin/activate-hermit`.
 
 Build:
 

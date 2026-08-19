@@ -2,6 +2,11 @@
 
 Flutter mobile client for Buzz.
 
+Install Flutter and the host tools using
+[`docs/development-toolchain.md`](../docs/development-toolchain.md) plus the
+Flutter platform prerequisites. Native Windows does not use
+`bin/activate-hermit`; macOS/Linux may use the repository's pinned Flutter.
+
 ## Setup
 
 ```bash

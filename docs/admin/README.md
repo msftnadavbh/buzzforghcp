@@ -17,6 +17,10 @@ The relay requires the configured admin host and matching browser origin.
 Requests and responses are bounded and uncached. The deployment routes admin
 traffic through the private ingress.
 
+For local `just admin-seed` / `just admin` commands, install the repository
+toolchain from [`../development-toolchain.md`](../development-toolchain.md).
+Native Windows uses Rustup/Node/pnpm rather than `bin/activate-hermit`.
+
 When the UI runs in a separate pod, proxy `/api/admin/v1/*` to the relay while
 preserving the admin `Host` header. A `NetworkPolicy` grants the admin pod access
 to that relay path.
