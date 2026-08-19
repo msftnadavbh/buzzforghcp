@@ -1,0 +1,93 @@
+name: Fork macOS Canary
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build macOS ${{ matrix.arch }} DMG
+    if: github.repository == 'msftnadavbh/buzzforghcp'
+    runs-on: macos-14
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: aarch64
+            target: aarch64-apple-darwin
+          - arch: x86_64
+            target: x86_64-apple-darwin
+    env:
+      TARGET: ${{ matrix.target }}
+    steps:
+      - name: Require main
+        env:
+          SOURCE_REF: ${{ github.ref }}
+        run: |
+          if [[ "$SOURCE_REF" != "refs/heads/main" ]]; then
+            echo "::error::Canary builds must run from main; got $SOURCE_REF"
+            exit 1
+          fi
+
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - uses: cashapp/activate-hermit@cea9af7913204a965fd488637a8d1811bba2e616 # v1
+
+      - name: Add Rust target
+        run: rustup target add "$TARGET"
+
+      - name: Install desktop dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Derive canary version
+        run: |
+          BASE_VERSION=$(node -p "require('./desktop/package.json').version")
+          VERSION="${BASE_VERSION%%-*}-ghcp-${{ matrix.arch }}.${GITHUB_RUN_NUMBER}"
+          cd desktop
+          node scripts/set-version-from-tag.mjs "$VERSION"
+          cd src-tauri
+          cargo update -p buzz-desktop
+
+      - name: Generate non-updating bundle config
+        run: |
+          cat > desktop/src-tauri/tauri.canary.conf.json <<'JSON'
+          {"bundle":{"createUpdaterArtifacts":false,"macOS":{"minimumSystemVersion":"10.15"}}}
+          JSON
+
+      - name: Build sidecars
+        run: |
+          cargo build --release --target "$TARGET" \
+            -p buzz-acp -p buzz-agent -p buzz-backend-kubernetes \
+            -p buzz-dev-mcp -p git-credential-nostr -p buzz-cli
+          ./scripts/bundle-sidecars.sh "$TARGET"
+
+      - name: Build unsigned DMG
+        run: |
+          cd desktop
+          pnpm tauri build --verbose --no-sign --target "$TARGET" --bundles dmg \
+            --config src-tauri/tauri.canary.conf.json
+        env:
+          CMAKE_POLICY_VERSION_MINIMUM: "3.5"
+          MACOSX_DEPLOYMENT_TARGET: "10.15"
+          CMAKE_OSX_DEPLOYMENT_TARGET: "10.15"
+          TAURI_BUNDLER_DMG_IGNORE_CI: "true"
+
+      - name: Locate DMG
+        id: artifact
+        run: |
+          DMG=$(find "desktop/src-tauri/target/${TARGET}/release/bundle/dmg" -name '*.dmg' -type f | head -1)
+          [[ -n "$DMG" ]] || { echo "::error::No DMG found"; exit 1; }
+          echo "dmg=$DMG" >> "$GITHUB_OUTPUT"
+
+      - name: Upload DMG
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: buzzforghcp-macos-${{ matrix.arch }}-${{ github.sha }}
+          path: ${{ steps.artifact.outputs.dmg }}
+          if-no-files-found: error
+          retention-days: 7

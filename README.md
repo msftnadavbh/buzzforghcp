@@ -77,6 +77,24 @@ native Windows Git Bash; this repository's Hermit packages are Unix-only.
 
 ### macOS App
 
+#### Recommended: Build on GitHub Actions
+
+The fork's **macOS Canary** workflow builds unsigned DMGs for both Apple
+Silicon and Intel on GitHub-hosted macOS:
+
+1. Open [Actions -> Fork macOS Canary](https://github.com/msftnadavbh/buzzforghcp/actions/workflows/fork-macos-canary.yml).
+2. Select **Run workflow**, choose `main`, then run it.
+3. Download the artifact matching your Mac:
+   - `buzzforghcp-macos-aarch64-<commit-sha>` for Apple Silicon.
+   - `buzzforghcp-macos-x86_64-<commit-sha>` for Intel.
+4. Unzip the artifact, open the DMG, and drag **Buzz** to **Applications**.
+
+The DMGs are unsigned. On first launch, right-click **Buzz** and choose
+**Open**, or use **System Settings -> Privacy & Security -> Open Anyway**.
+Artifacts are retained for seven days.
+
+#### Alternative: Build Locally
+
 Requirements:
 
 - macOS
@@ -92,7 +110,7 @@ cargo build --release \
   -p buzz-acp -p buzz-agent -p buzz-backend-kubernetes \
   -p buzz-dev-mcp -p git-credential-nostr -p buzz-cli
 ./scripts/bundle-sidecars.sh
-pnpm --dir desktop tauri build --bundles dmg --features mesh-llm
+pnpm --dir desktop tauri build --no-sign --bundles dmg
 ```
 
 The installer is created under:
@@ -104,6 +122,11 @@ desktop/src-tauri/target/release/bundle/dmg/
 Open the `.dmg`, drag **Buzz** into **Applications**, then launch Buzz. This is
 an unsigned local build, so macOS may require **System Settings -> Privacy &
 Security -> Open Anyway** on first launch.
+
+This default build intentionally omits the optional `mesh-llm` feature. GitHub
+Copilot CLI does not need it, and omitting it avoids a separate native llama
+runtime build and multi-gigabyte model/runtime downloads. Shared compute can be
+built separately using [`docs/buzz-shared-compute-dev.md`](docs/buzz-shared-compute-dev.md).
 
 This fork uses the same application identifier and name as upstream Buzz.
 Installing it replaces an existing upstream Buzz installation in

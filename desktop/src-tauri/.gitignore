@@ -8,3 +8,5 @@
 
 # Sidecar binaries (built by scripts/bundle-sidecars.sh)
 /binaries
+tauri.canary.conf.json
+tauri.release.conf.json
