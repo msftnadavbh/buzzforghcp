@@ -15,12 +15,8 @@ require() {
 
 require "github.repository == 'msftnadavbh/buzzforghcp'" \
   'macOS canary must be scoped to the fork.'
-require 'target: aarch64-apple-darwin' \
+require 'TARGET: aarch64-apple-darwin' \
   'macOS canary must build Apple Silicon explicitly.'
-require 'target: x86_64-apple-darwin' \
-  'macOS canary must build Intel explicitly.'
-require 'version_arch: x86-64' \
-  'Intel canary versions must use a semver-safe architecture name.'
 require 'cargo build --release --target "$TARGET"' \
   'Sidecars must use the matrix target.'
 require './scripts/bundle-sidecars.sh "$TARGET"' \
@@ -34,6 +30,11 @@ require 'createUpdaterArtifacts":false' \
 
 if grep -Fq -- '--features mesh-llm' "$WORKFLOW"; then
   printf 'Copilot macOS canary must not pull in optional MeshLLM native builds.\n' >&2
+  exit 1
+fi
+
+if grep -Fq -- 'x86_64-apple-darwin' "$WORKFLOW"; then
+  printf 'Copilot macOS canary must only build Apple Silicon.\n' >&2
   exit 1
 fi
 
